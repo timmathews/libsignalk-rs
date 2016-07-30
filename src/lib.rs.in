@@ -1,0 +1,79 @@
+#[derive(Serialize, Deserialize)]
+pub enum Operation {
+    Equal,
+    LessThan,
+    GreaterThan,
+    LessOrEqual,
+    GreaterOrEqual,
+    NotEqual,
+}
+
+#[derive(Serialize, Deserialize)]
+pub enum FieldsetType {
+    Datetime,
+}
+
+#[derive(Serialize, Deserialize)]
+pub enum FieldType {
+    Date,
+    Time,
+    Day,
+    Month,
+    Year,
+    TzHour,
+    TzMinute,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Condition {
+    pub operation: Operation,
+    pub field: u32,
+    pub value: String,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Sentence {
+    pub id: String,
+    pub field: u32,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Multiplier {
+    pub id: String,
+    pub field: u32,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Classifier {
+    pub id: String,
+    pub field: u32,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Field {
+    pub field_type: FieldType,
+    pub value: u32,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Fieldset {
+    pub fieldset_type: FieldsetType,
+    pub fields: Vec<Field>,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
+pub struct ParameterGroup {
+    pub pgn: u32,
+    pub field: u32,
+//    pub fieldset: Fieldset,
+//    pub multiplier: Multiplier,
+//    pub classifier: Classifier,
+//    pub conditions: Vec<Condition>,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
+pub struct Mapping {
+    pub path: String,
+    pub parameter_groups: Vec<ParameterGroup>,
+//    pub sentences: Vec<Sentence>,
+}
