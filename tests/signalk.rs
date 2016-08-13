@@ -17,7 +17,7 @@ extern crate serde;
 extern crate serde_xml;
 extern crate libsignalk;
 
-use libsignalk::{ Mapping, ParameterGroup };
+use libsignalk::*;
 
 use serde_xml::from_str;
 
@@ -30,24 +30,89 @@ fn read_xml() {
                 <pgn>123456</pgn>
                 <field>1</field>
             </parameter_group>
+            <parameter_group>
+                <pgn>234567</pgn>
+                <field>2</field>
+            </parameter_group>
         </mapping>
     ";
 
-    let mut expect = Mapping {
+    let expect = Mapping {
         path: "some/path".to_string(),
-        parameter_groups: Vec::new(),
+        parameter_groups: vec![
+            ParameterGroup {
+                pgn: 123456,
+                field: 1,
+            },
+            ParameterGroup {
+                pgn: 234567,
+                field: 2,
+            },
+        ],
     };
-
-    expect.parameter_groups.push(ParameterGroup {
-        pgn: 123456,
-        field: 1,
-    });
 
     let v = from_str::<Mapping>(xml);
 
     match v {
         Ok(val) => {
-            assert_eq!(val, expect);
+            assert_eq!(val, expect)
+        },
+        Err(err) => {
+            println!("{}", err);
+            assert!(false)
+        },
+    }
+}
+
+#[test]
+fn read_mappings() {
+    let xml = "
+        <mappings>
+            <mapping>
+                <path>some/path</path>
+                <parameter_group>
+                    <pgn>1</pgn>
+                    <field>1</field>
+                </parameter_group>
+            </mapping>
+            <mapping>
+                <path>some/other/path</path>
+                <parameter_group>
+                    <pgn>2</pgn>
+                    <field>2</field>
+                </parameter_group>
+            </mapping>
+        </mappings>
+    ";
+
+    let expect = Mappings {
+        mapping: vec![
+            Mapping {
+                path: "some/path".to_string(),
+                parameter_groups: vec![
+                    ParameterGroup {
+                        pgn: 1,
+                        field: 1,
+                    },
+                ],
+            },
+            Mapping {
+                path: "some/other/path".to_string(),
+                parameter_groups: vec![
+                    ParameterGroup {
+                        pgn: 2,
+                        field: 2,
+                    },
+                ],
+            },
+        ],
+    };
+
+    let v = from_str::<Mappings>(xml);
+
+    match v {
+        Ok(val) => {
+            assert_eq!(val, expect)
         },
         Err(err) => {
             println!("{}", err);
