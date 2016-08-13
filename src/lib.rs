@@ -13,7 +13,22 @@
  *     limitations under the License.
  */
 
-extern crate serde;
+extern crate serde_xml;
+
+use std::io;
+use std::io::Error;
+use std::io::prelude::*;
+use std::fs::File;
+
+use serde_xml::from_str;
 
 include!(concat!(env!("OUT_DIR"), "/lib.rs"));
 
+fn load_map(path: &str) -> std::io::Result<()> {
+    let mut file = try!(File::open(path));
+    let mut buffer = String::new();
+
+    try!(file.read_to_string(&mut buffer));
+
+    let result = try!(from_str::<Mappings>(buffer));
+}

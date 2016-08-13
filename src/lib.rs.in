@@ -87,8 +87,19 @@ pub struct ParameterGroup {
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
+pub struct ParameterGroups {
+    pub parameter_group: Vec<ParameterGroup>,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Mapping {
     pub path: String,
+    #[serde(rename="parameter_group")]
     pub parameter_groups: Vec<ParameterGroup>,
 //    pub sentences: Vec<Sentence>,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
+pub struct Mappings {
+    pub mapping: Vec<Mapping>,
 }
