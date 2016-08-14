@@ -15,20 +15,57 @@
 
 extern crate serde_xml;
 
-use std::io;
-use std::io::Error;
 use std::io::prelude::*;
 use std::fs::File;
+use std::path::Path;
 
-use serde_xml::from_str;
+use serde_xml::{from_str, Error};
 
 include!(concat!(env!("OUT_DIR"), "/lib.rs"));
 
-fn load_map(path: &str) -> std::io::Result<()> {
-    let mut file = try!(File::open(path));
-    let mut buffer = String::new();
+impl Mappings {
+    pub fn from_file<P: AsRef<Path>>(path: P) -> Result<Mappings, Error> {
+        let mut file = File::open(path).expect("Could not open file");
+        let mut buf = String::new();
 
-    try!(file.read_to_string(&mut buffer));
+        try!(file.read_to_string(&mut buf));
 
-    let result = try!(from_str::<Mappings>(buffer));
+        from_str::<Mappings>(&buf)
+    }
+}
+
+#[test]
+fn test_from_file() {
+    let m = Mappings::from_file("tests/samples/valid_two_mappings.xml");
+
+    let expect = Mappings {
+        mapping: vec![
+            Mapping {
+                path: "some/path".to_string(),
+                parameter_groups: vec![
+                    ParameterGroup {
+                        pgn: 1,
+                        field: 1,
+                    },
+                ],
+            },
+            Mapping {
+                path: "some/other/path".to_string(),
+                parameter_groups: vec![
+                    ParameterGroup {
+                        pgn: 2,
+                        field: 2,
+                    },
+                ],
+            },
+        ],
+    };
+
+    match m {
+        Ok(val) => { assert_eq!(val, expect) },
+        Err(err) => {
+            println!("{}", err);
+            assert!(false)
+        }
+    }
 }

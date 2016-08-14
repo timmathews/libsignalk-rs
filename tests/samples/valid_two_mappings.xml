@@ -1,0 +1,16 @@
+<mappings>
+    <mapping>
+        <path>some/path</path>
+        <parameter_group>
+            <pgn>1</pgn>
+            <field>1</field>
+        </parameter_group>
+    </mapping>
+    <mapping>
+        <path>some/other/path</path>
+        <parameter_group>
+            <pgn>2</pgn>
+            <field>2</field>
+        </parameter_group>
+    </mapping>
+</mappings>
