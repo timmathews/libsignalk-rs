@@ -13,6 +13,11 @@
  *     limitations under the License.
  */
 
+#[cfg(feature = "serde_derive")]
+#[macro_use]
+extern crate serde_derive;
+
+extern crate serde;
 extern crate serde_xml;
 
 use std::io::prelude::*;
@@ -21,6 +26,10 @@ use std::path::Path;
 
 use serde_xml::{from_str, Error};
 
+#[cfg(feature = "serde_derive")]
+include!("lib.in.rs");
+
+#[cfg(feature = "serde_codegen")]
 include!(concat!(env!("OUT_DIR"), "/lib.rs"));
 
 impl Mappings {

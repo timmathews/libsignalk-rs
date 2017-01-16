@@ -1,14 +1,18 @@
 [package]
 name = "libsignalk"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Tim Mathews <tim@signalk.org>"]
 license = "Apache-2.0"
 build = "build.rs"
 
+[features]
+default = ["serde_codegen"]
+unstable = ["serde_derive"]
+
 [build-dependencies]
-syntex = "*"
-serde_codegen = "*"
+serde_codegen = { version = "0.8", optional = true }
 
 [dependencies]
-serde = "*"
+serde = "0.8"
+serde_derive = { version = "0.8", optional = true }
 serde_xml = "*"

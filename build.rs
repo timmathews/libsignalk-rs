@@ -13,22 +13,22 @@
  *     limitations under the License.
  */
 
-extern crate syntex;
-extern crate serde_codegen;
-
-use std::env;
-use std::path::Path;
-
+#[cfg(feature = "serde_codegen")]
 fn main() {
+    extern crate serde_codegen;
+
+    use std::env;
+    use std::path::Path;
+
     let out_dir = env::var_os("OUT_DIR").unwrap();
 
-    let src = Path::new("src/lib.rs.in");
+    let src = Path::new("src/lib.in.rs");
     let dst = Path::new(&out_dir).join("lib.rs");
 
-//    let mut registry = syntex::Registry::new();
-
-//    serde_codegen::register(&mut registry);
-//    registry.expand("", &src, &dst).unwrap();
-    serde_codegen::expand(&src, &dst).unwrap(); // v0.8.0
+    serde_codegen::expand(&src, &dst).unwrap();
 }
 
+#[cfg(not(feature = "serde_codegen"))]
+fn main() {
+    // nothing to do ...
+}
