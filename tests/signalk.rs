@@ -13,13 +13,12 @@
  *     limitations under the License.
  */
 
-extern crate serde;
-extern crate serde_xml;
+extern crate serde_xml_rs;
 extern crate libsignalk;
 
 use libsignalk::*;
 
-use serde_xml::from_str;
+use serde_xml_rs::from_str;
 
 #[test]
 fn read_xml() {

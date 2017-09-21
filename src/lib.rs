@@ -13,24 +13,22 @@
  *     limitations under the License.
  */
 
-#[cfg(feature = "serde_derive")]
 #[macro_use]
 extern crate serde_derive;
 
-extern crate serde;
-extern crate serde_xml;
+extern crate serde_xml_rs;
+
+extern crate chrono;
 
 use std::io::prelude::*;
 use std::fs::File;
 use std::path::Path;
 
-use serde_xml::{from_str, Error};
+use chrono::prelude::*;
 
-#[cfg(feature = "serde_derive")]
+use serde_xml_rs::{from_str, Error};
+
 include!("lib.in.rs");
-
-#[cfg(feature = "serde_codegen")]
-include!(concat!(env!("OUT_DIR"), "/lib.rs"));
 
 impl Mappings {
     pub fn from_file<P: AsRef<Path>>(path: P) -> Result<Mappings, Error> {
