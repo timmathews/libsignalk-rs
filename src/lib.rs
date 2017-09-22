@@ -20,24 +20,22 @@ extern crate serde_xml_rs;
 
 extern crate chrono;
 
-use std::io::prelude::*;
+use std::io::BufReader;
 use std::fs::File;
 use std::path::Path;
 
 use chrono::prelude::*;
 
-use serde_xml_rs::{from_str, Error};
+use serde_xml_rs::{from_reader, Error};
 
 include!("lib.in.rs");
 
 impl Mappings {
     pub fn from_file<P: AsRef<Path>>(path: P) -> Result<Mappings, Error> {
-        let mut file = File::open(path).expect("Could not open file");
-        let mut buf = String::new();
+        let file = File::open(path).expect("Could not open file");
+        let reader = BufReader::new(file);
 
-        try!(file.read_to_string(&mut buf));
-
-        from_str::<Mappings>(&buf)
+        from_reader(reader)
     }
 }
 
@@ -49,21 +47,31 @@ fn test_from_file() {
         mapping: vec![
             Mapping {
                 path: "some/path".to_string(),
-                parameter_groups: vec![
+                parameter_groups: Some(vec![
                     ParameterGroup {
                         pgn: 1,
-                        field: 1,
+                        field: Some(1),
+                        fieldset: None,
+                        multiplier: None,
+                        classifier: None,
+                        conditions: None,
                     },
-                ],
+                ]),
+                sentences: None,
             },
             Mapping {
                 path: "some/other/path".to_string(),
-                parameter_groups: vec![
+                parameter_groups: Some(vec![
                     ParameterGroup {
                         pgn: 2,
-                        field: 2,
+                        field: Some(2),
+                        fieldset: None,
+                        multiplier: None,
+                        classifier: None,
+                        conditions: None,
                     },
-                ],
+                ]),
+                sentences: None,
             },
         ],
     };

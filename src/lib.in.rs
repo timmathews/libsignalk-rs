@@ -13,7 +13,7 @@
  *     limitations under the License.
  */
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub enum Operation {
     Equal,
     LessThan,
@@ -23,83 +23,126 @@ pub enum Operation {
     NotEqual,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub enum FieldsetType {
+    #[serde(rename="datetime")]
     Datetime,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub enum FieldType {
+    #[serde(rename="date")]
     Date,
+    #[serde(rename="time")]
     Time,
+    #[serde(rename="day")]
     Day,
+    #[serde(rename="month")]
     Month,
+    #[serde(rename="year")]
     Year,
+    #[serde(rename="tzHour")]
     TzHour,
+    #[serde(rename="tzMinute")]
     TzMinute,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Condition {
     pub operation: Operation,
     pub field: u32,
     pub value: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Sentence {
     pub id: String,
-    pub field: u32,
+    pub field: Option<u32>,
+    pub fieldset: Option<Fieldset>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Multiplier {
     pub id: String,
     pub field: u32,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Classifier {
     pub id: String,
     pub field: u32,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Field {
+    #[serde(rename="type")]
     pub field_type: FieldType,
+    #[serde(rename="$value")]
     pub value: u32,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Fieldset {
+    #[serde(rename="type")]
     pub fieldset_type: FieldsetType,
+    #[serde(rename="field")]
     pub fields: Vec<Field>,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct ParameterGroup {
     pub pgn: u32,
-    pub field: u32,
-//    pub fieldset: Fieldset,
-//    pub multiplier: Multiplier,
-//    pub classifier: Classifier,
-//    pub conditions: Vec<Condition>,
-}
-
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
-pub struct ParameterGroups {
-    pub parameter_group: Vec<ParameterGroup>,
+    pub field: Option<u32>,
+    pub fieldset: Option<Fieldset>,
+    pub multiplier: Option<Multiplier>,
+    pub classifier: Option<Classifier>,
+    pub conditions: Option<Vec<Condition>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Mapping {
     pub path: String,
     #[serde(rename="parameter_group")]
-    pub parameter_groups: Vec<ParameterGroup>,
-//    pub sentences: Vec<Sentence>,
+    pub parameter_groups: Option<Vec<ParameterGroup>>,
+    #[serde(rename="sentence")]
+    pub sentences: Option<Vec<Sentence>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Mappings {
     pub mapping: Vec<Mapping>,
+}
+
+// Signal K JSON Types
+#[derive(Serialize, Deserialize)]
+pub struct Source {
+    pub pgn: u32,
+    pub device: String,
+    pub src: u8,
+}
+
+#[derive(Serialize, Deserialize)]
+pub enum JsonValue {
+    Integer(i64),
+    Double(f64),
+    String,
+    Boolean(bool),
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Value {
+    pub path: String,
+    pub value: JsonValue,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Update {
+    pub source: Source,
+    pub timestamp: DateTime<Utc>,
+    pub values: Vec<Value>,
+}
+
+pub struct Delta {
+    pub context: String,
+    pub updates: Vec<Update>,
 }

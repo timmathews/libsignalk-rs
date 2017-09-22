@@ -33,21 +33,40 @@ fn read_xml() {
                 <pgn>234567</pgn>
                 <field>2</field>
             </parameter_group>
+            <sentence>
+                <id>Foo</id>
+                <field>1</field>
+            </sentence>
         </mapping>
     ";
 
     let expect = Mapping {
         path: "some/path".to_string(),
-        parameter_groups: vec![
+        parameter_groups: Some(vec![
             ParameterGroup {
                 pgn: 123456,
-                field: 1,
+                field: Some(1),
+                fieldset: None,
+                multiplier: None,
+                classifier: None,
+                conditions: None,
             },
             ParameterGroup {
                 pgn: 234567,
-                field: 2,
+                field: Some(2),
+                fieldset: None,
+                multiplier: None,
+                classifier: None,
+                conditions: None,
             },
-        ],
+        ]),
+        sentences: Some(vec![
+            Sentence {
+                id: "Foo".to_string(),
+                field: Some(1),
+                fieldset: None,
+            },
+        ]),
     };
 
     let v = from_str::<Mapping>(xml);
@@ -65,13 +84,16 @@ fn read_xml() {
 
 #[test]
 fn read_mappings() {
-    let xml = "
+    let xml = r##"
         <mappings>
             <mapping>
                 <path>some/path</path>
                 <parameter_group>
                     <pgn>1</pgn>
-                    <field>1</field>
+                    <fieldset type="datetime">
+                        <field type="date">2</field>
+                        <field type="time">3</field>
+                    </fieldset>
                 </parameter_group>
             </mapping>
             <mapping>
@@ -82,27 +104,49 @@ fn read_mappings() {
                 </parameter_group>
             </mapping>
         </mappings>
-    ";
+    "##;
 
     let expect = Mappings {
         mapping: vec![
             Mapping {
                 path: "some/path".to_string(),
-                parameter_groups: vec![
+                parameter_groups: Some(vec![
                     ParameterGroup {
                         pgn: 1,
-                        field: 1,
+                        field: None,
+                        fieldset: Some(Fieldset {
+                            fieldset_type: FieldsetType::Datetime,
+                            fields: vec![
+                                Field {
+                                    field_type: FieldType::Date,
+                                    value: 2,
+                                },
+                                Field {
+                                    field_type: FieldType::Time,
+                                    value: 3,
+                                },
+                            ],
+                        }),
+                        multiplier: None,
+                        classifier: None,
+                        conditions: None,
                     },
-                ],
+                ]),
+                sentences: None,
             },
             Mapping {
                 path: "some/other/path".to_string(),
-                parameter_groups: vec![
+                parameter_groups: Some(vec![
                     ParameterGroup {
                         pgn: 2,
-                        field: 2,
+                        field: Some(2),
+                        fieldset: None,
+                        multiplier: None,
+                        classifier: None,
+                        conditions: None,
                     },
-                ],
+                ]),
+                sentences: None,
             },
         ],
     };
